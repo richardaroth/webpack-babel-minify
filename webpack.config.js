@@ -1,5 +1,4 @@
-const ExtractTextPlugin = require("extract-text-webpack-plugin");
-const MinifyPlugin = require("babel-minify-webpack-plugin");
+const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const path = require('path');
 const prod = process.argv.indexOf('-p') !== -1;
 const webpack = require('webpack');
@@ -18,22 +17,15 @@ const config = {
 		},
 		{
 	        test: /\.scss$/,
-			use: ExtractTextPlugin.extract({
-				fallback: 'style-loader',
-				use: 'css-loader!sass-loader'
-			})
+			use: [MiniCssExtractPlugin.loader, 'css-loader', 'sass-loader'],
 		}]
 	},
 	plugins: [
-		new ExtractTextPlugin('main.css')
+		new MiniCssExtractPlugin()
 	]
 };
 
-if (prod) {
-	config.plugins.push(
-		new MinifyPlugin()
-	);
-} else {
+if (process.env.NODE_ENV !== 'production') {
 	config.devtool = 'inline-source-map'
 }
 
